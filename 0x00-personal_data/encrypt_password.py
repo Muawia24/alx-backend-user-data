@@ -15,3 +15,11 @@ def hash_password(password: str) -> bytes:
     bytes = password.encode('utf-8')
 
     return bcrypt.hashpw(bytes, salt)
+
+
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    b_pass = password.encode('utf-8')
+    return bcrypt.checkpw(
+            b_pass,
+            hashed_password
+            )
