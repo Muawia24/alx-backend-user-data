@@ -69,10 +69,10 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     returns a connector to the database
     """
-    host = os.environ.get('PERSONAL_DATA_DB_HOST', 'localhost')
-    user = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
-    password = os.environ.get('PERSONAL_DATA_DB_PASSWORD', '')
-    db = os.environ.get('PERSONAL_DATA_DB_NAME')
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    db = os.getenv('PERSONAL_DATA_DB_NAME')
 
     connection = mysql.connector.connect(
             host=host,
@@ -82,3 +82,35 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
             )
 
     return connection
+
+
+def main() -> None:
+    """
+    Obtain a database connection using get_db and retrieve
+    all rows in the users table and display each row under
+    a filtered format.
+    """
+    db_connection = get_db()
+
+    cursor = db_connection.curtor()
+    cursor.execute('SELECT * FROM users;')
+
+    rows = cursor.fetchall()
+
+    logger = get_logger()
+
+    for row in rows:
+        message = "; ".join([f"{field}={row[field]}" for field in row.keys()])
+
+        formated_msg = filter_datum(PII_FIELDS,
+                                    RedactingFormatter.REDACTION,
+                                    message,
+                                    RedactingFormatter.SEPARATOR)
+        logger.info(formated_msg)
+
+    cursor.close()
+    db_connection.close()
+
+
+if __name__ == "__main__":
+    main()
