@@ -9,6 +9,9 @@ from typing import List, TypeVar
 
 
 class Auth:
+    """
+    Manages the API authentication
+    """
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
@@ -31,5 +34,6 @@ class Auth:
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
+        Checks for the current user
         """
         return None
