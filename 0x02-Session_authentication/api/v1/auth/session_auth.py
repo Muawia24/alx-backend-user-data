@@ -9,8 +9,7 @@ import uuid
 
 class SessionAuth(Auth):
     """ Session Authentication class """
-    def __init__(self):
-        self.user_id_by_session_id = {}
+    user_id_by_session_id = {}
 
     def create_session(self, user_id: str = None) -> str:
         """
