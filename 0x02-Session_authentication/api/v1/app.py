@@ -30,6 +30,9 @@ elif os.getenv("AUTH_TYPE") == 'session_auth':
 elif os.getenv("AUTH_TYPE") == 'session_exp_auth':
     from api.v1.auth.session_exp_auth import SessionExpAuth
     auth = SessionExpAuth()
+elif os.getenv("AUTH_TYPE") == 'session_db_auth':
+    from api.v1.auth.session_db_auth import SessionDBAuth
+    auth = SessionDBAuth()
 
 
 @app.before_request
@@ -54,6 +57,7 @@ def auth_handler():
         abort(401)
 
     if auth.current_user(request) is None:
+        print("here")
         abort(403)
 
     request.current_user = auth.current_user(request)
