@@ -11,6 +11,9 @@ import os
 def login():
     """
     POST /auth_session/login
+    Return:
+        dictionary representation of user if found else
+        error message
     """
     email = request.form.get('email')
     if email is None:
@@ -18,7 +21,7 @@ def login():
 
     pwd = request.form.get('password')
     if pwd is None:
-        return jsonify({"error": "password missing"})
+        return jsonify({"error": "password missing"}), 400
 
     try:
         users = User.search({"email": email})
@@ -40,3 +43,20 @@ def login():
     response.set_cookie(session_name, session_id)
 
     return response
+
+
+@app_views.route(
+        '/auth_session/logout',
+        methods=['DELETE'], strict_slashes=False)
+def logout():
+    """
+    DELETE /api/v1/auth_session/logout
+    Return:
+        Empty json dictionary in success or error
+    """
+    from api.v1.app import auth
+
+    if not auth.destroy_session(request):
+        abort(404)
+
+    return jsonify({}), 200
