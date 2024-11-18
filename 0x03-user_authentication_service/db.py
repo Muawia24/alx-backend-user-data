@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 
 from user import Base, User
 from typing import TypeVar
@@ -43,5 +45,42 @@ class DB:
 
             return user
 
-        except SQLAlchemyError as e:
-            raise e
+        except Exception:
+            self.__session.rollback()
+            user = None
+
+        return user
+
+    def find_user_by(self, **kwargs) -> User:
+        """
+        Args:
+            arbitrary keyword arguments
+        Returns:
+            returns the first row found in the users table
+            as filtered by the method's input arguments.
+        """
+        if not kwargs:
+            raise InvalidRequestError("No filter provided for the query")
+        try:
+            user = self.__session.query(User).filter_by(**kwargs).one()
+            return user
+        except NoResultFound:
+            raise NoResultFound("No Result Found")
+        except InvalidRequestError:
+            raise InvalidRequestError("Wrong query arguments are passed")
+
+    def update_user(self, user_id, **kwargs) -> None:
+        """
+        Args:
+            user_id integer and arbitrary keyword arguments
+        Returns:
+            None
+        """
+        user = self.find_user_by(id=user_id)
+
+        for key, value in kwargs.items():
+            if not hasattr(user, key):
+                raise ValueError(f"Invalid attribute: {key}")
+            setattr(user, key, value)
+
+        self.__session.commit()
