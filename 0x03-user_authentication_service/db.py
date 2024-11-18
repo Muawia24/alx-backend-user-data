@@ -46,7 +46,7 @@ class DB:
             return user
 
         except Exception:
-            self.__session.rollback()
+            self._session.rollback()
             user = None
 
         return user
@@ -62,7 +62,7 @@ class DB:
         if not kwargs:
             raise InvalidRequestError("No filter provided for the query")
         try:
-            user = self.__session.query(User).filter_by(**kwargs).one()
+            user = self._session.query(User).filter_by(**kwargs).one()
             return user
         except NoResultFound:
             raise NoResultFound("No Result Found")
@@ -83,4 +83,4 @@ class DB:
                 raise ValueError(f"Invalid attribute: {key}")
             setattr(user, key, value)
 
-        self.__session.commit()
+        self._session.commit()
