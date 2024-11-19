@@ -87,7 +87,7 @@ class DB:
             raise ValueError(f"User with id {user.id} not found")
 
         for key, value in kwargs.items():
-            if not hasattr(user, key):
+            if not hasattr(User, key):
                 raise ValueError(f"Invalid attribute: {key}")
             setattr(user, key, value)
 
