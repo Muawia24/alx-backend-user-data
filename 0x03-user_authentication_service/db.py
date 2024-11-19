@@ -38,16 +38,15 @@ class DB:
          two required string arguments: email and
          hashed_password, and returns a User object
         """
+        user = User(email=email, hashed_password=hashed_password)
         try:
-            user = User(email=email, hashed_password=hashed_password)
             self._session.add(user)
             self._session.commit()
 
-            return user
-
-        except Exception:
+        except Exception as e:
+            print(f"Error adding user to database: {e}")
             self._session.rollback()
-            user = None
+            raise
 
         return user
 
