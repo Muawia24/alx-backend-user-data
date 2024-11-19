@@ -13,8 +13,8 @@ app.url_map.strict_slashes = False
 AUTH = Auth()
 
 
-@app.route('/', methods=['GET'])
-def home():
+@app.route('/', methods=['GET'], strict_slashes=False)
+def home() -> str:
     """
     Returns:
         {"message": "Bienvenue"}
@@ -22,8 +22,8 @@ def home():
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route('/users', methods=['POST'])
-def users():
+@app.route('/users', methods=['POST'], strict_slashes=False)
+def users() -> str:
     """
     POST /users
     """
@@ -38,8 +38,8 @@ def users():
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route('/sessions', methods=['POST'])
-def login():
+@app.route('/sessions', methods=['POST'], strict_slashes=False)
+def login() -> str:
     """
     POST /sessions
     """
@@ -56,15 +56,15 @@ def login():
     return response
 
 
-@app.route('/sessions', methods=['DELETE'])
-def logout():
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout() -> str:
     """
     DELETE /sessions
     """
     session_id = request.cookies.get('session_id')
 
     user = AUTH.get_user_from_session_id(session_id)
-    if not user:
+    if user is None:
         abort(403)
 
     AUTH.destroy_session(user.id)
@@ -72,14 +72,14 @@ def logout():
     return redirect(url_for("home"))
 
 
-@app.route('/profile', methods=['GET'])
-def profile():
+@app.route('/profile', methods=['GET'], strict_slashes=False)
+def profile() -> str:
     """
     GET /profile
     """
     session_id = request.cookies.get('session_id')
     user = AUTH.get_user_from_session_id(session_id)
-    if not user:
+    if user is None:
         abort(403)
 
     return jsonify({"email": user.email}), 200
