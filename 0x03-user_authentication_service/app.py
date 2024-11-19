@@ -9,6 +9,7 @@ from flask import Flask, jsonify, request, abort, redirect, url_for
 from auth import Auth
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 AUTH = Auth()
 
 
