@@ -47,9 +47,13 @@ def login():
     password = request.form.get('password')
 
     if not AUTH.valid_login(email, password):
-        return abort(401)
+        abort(401)
 
-    return jsonify({"email": "<user email>", "message": "logged in"})
+    session_id = AUTH.create_session(email)
+    response = jsonify({"email": "<user email>", "message": "logged in"})
+    response.set_cookie("session_id", session_id)
+
+    return response
 
 
 @app.route('/sessions', methods=['DELETE'])
@@ -66,6 +70,19 @@ def logout():
     AUTH.destroy_session(user.id)
 
     return redirect(url_for("home"))
+
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    """
+    GET /profile
+    """
+    session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
+    if not user:
+        abort(403)
+
+    return jsonify({"email": user.email}), 200
 
 
 if __name__ == "__main__":
