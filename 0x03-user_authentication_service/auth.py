@@ -162,5 +162,5 @@ class Auth:
         self._db.update_user(
                 user.id,
                 hashed_password=hashed_pwd,
-                reset_token=None
-                )
+                reset_token=None,
+        )
