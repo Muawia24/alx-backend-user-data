@@ -74,7 +74,7 @@ class DB:
         except InvalidRequestError:
             raise InvalidRequestError("Wrong query arguments are passed")
 
-    def update_user(self, user_id: int, **kwargs: ) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """
         Args:
             user_id integer and arbitrary keyword arguments
