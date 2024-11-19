@@ -14,7 +14,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
 
 from user import Base, User
-from typing import TypeVar
 
 logging.disable(logging.WARNING)
 
@@ -82,7 +81,10 @@ class DB:
         Returns:
             None
         """
-        user = self.find_user_by(id=user_id)
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
+            raise ValueError(f"User with id {user.id} not found")
 
         for key, value in kwargs.items():
             if not hasattr(user, key):
