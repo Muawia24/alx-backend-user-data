@@ -8,7 +8,6 @@ import bcrypt
 import uuid
 from db import DB
 from user import User
-from typing import TypeVar
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -39,7 +38,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str) -> TypeVar('User'):
+    def register_user(self, email: str, password: str) -> User:
         """
         Args:
             email and password string arguments
