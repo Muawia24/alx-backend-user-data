@@ -50,7 +50,7 @@ def login() -> str:
         abort(401)
 
     session_id = AUTH.create_session(email)
-    response = jsonify({"email": "<user email>", "message": "logged in"})
+    response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
 
     return response
@@ -122,7 +122,7 @@ def update_password() -> str:
     new_password = request.form.get('new_password')
 
     try:
-        Auth.update_password(reset_token, new_password)
+        AUTH.update_password(reset_token, new_password)
     except ValueError:
         abort(403)
 
